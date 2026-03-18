@@ -1,0 +1,90 @@
+class Solution {
+public:
+    bool isNumber(string s) {
+        
+        int length = s.size();
+        
+        int count = 0;
+        int exponential = 0, place_e = -1; 
+        int place_point = 0, point = 0;
+        int place_n = 0, place_p = 0;
+        int negative = 0, positive = 0, sign = 0;
+        int C_expo = 0, place_C_expo = 0; 
+        
+        // First loop: count special characters
+        for(int i = 0; i < length; i++){
+            if(s[i] == 'e'){
+                exponential++;
+                place_e = i;
+            }
+            else if(s[i] == 'E'){
+                C_expo++;
+                place_C_expo = i;
+            }
+            else if(s[i] == '.'){
+                point++;
+                place_point = i;
+            }
+            else if(s[i] == '-'){
+                negative++;
+                place_n = i;
+            }
+            else if(s[i] == '+'){
+                positive++;
+                place_p = i;
+            }
+        }
+
+        sign = positive + negative;
+
+        // Second loop: valid character check
+        for(int i = 0; i < length; i++){
+            if((s[i] >= '0' && s[i] <= '9') || s[i] == '+' || s[i] == '-' || 
+               s[i] == '.' || s[i] == 'e' || s[i] == 'E'){
+                count++;
+            }
+        }
+
+        
+        if((place_e != -1 && place_point > place_e) || 
+           point >= 2 || exponential >= 2 || C_expo >= 2 || 
+           (sign >= 2 && exponential == 0 && C_expo == 0) || 
+           exponential == length || 
+           (point == 1 && count == 1) || 
+           (length == 2 && exponential == 1) 
+
+           || (positive == 1 && place_p != 0 && !(place_p > 0 && (s[place_p - 1] == 'e' || s[place_p - 1] == 'E')))  ||    (negative == 1 && place_n != 0 && !(place_n > 0 && (s[place_n - 1] == 'e' || s[place_n - 1] == 'E')))  ||
+
+           (sign+point==length)||
+
+           
+           (exponential == 1 && (place_e == 0 || place_e == length - 1)) ||
+           (exponential == 1 && !(isdigit(s[place_e - 1]) || s[place_e - 1] == '.')) ||
+           (exponential == 1 && 
+              !(isdigit(s[place_e + 1]) || 
+                ((s[place_e + 1] == '+' || s[place_e + 1] == '-') 
+                  && place_e + 2 < length && isdigit(s[place_e + 2])))) ||
+                   (exponential == 1 && place_e > 0 && !isdigit(s[place_e - 1]) && 
+    (place_e - 2 < 0 || !isdigit(s[place_e - 2]))) ||
+
+           // E conditions
+           (C_expo == 1 && (place_C_expo == 0 || place_C_expo == length - 1)) ||
+           (C_expo == 1 && !isdigit(s[place_C_expo - 1])) ||
+           (C_expo == 1 && 
+              !(isdigit(s[place_C_expo + 1]) || 
+                ((s[place_C_expo + 1] == '+' || s[place_C_expo + 1] == '-') 
+                  && place_C_expo + 2 < length && isdigit(s[place_C_expo + 2]))))
+                  
+
+                  || (positive > 1 && !(place_p > 0 && (s[place_p - 1] == 'e' || s[place_p -                      1] == 'E')))
+                  || (negative > 1 && !(place_n > 0 && (s[place_n - 1] == 'e' || s[place_n - 1] == 'E')))
+        ){
+            return false;
+        }
+        else if(count == length){
+            return true;
+        }
+
+        return false;
+    }
+};
